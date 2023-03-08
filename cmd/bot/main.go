@@ -9,23 +9,23 @@ import (
 	"github.com/piatoss3612/tx-noti-bot/internal/logger"
 )
 
-var BOT_NAME = "TX-NOTI-BOT"
+var BOT_NAME = "Tx-Noti-Bot"
 
 func main() {
 	logger.SetStructuredLogger(BOT_NAME, os.Stdout)
 
-	b, err := bot.New(BOT_NAME, os.Getenv("DISCORD_TOKEN"))
+	app, err := bot.New(BOT_NAME, os.Getenv("DISCORD_TOKEN"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	shutdown, err := b.Setup().Open()
+	shutdown, err := app.Setup().Open()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	defer func() {
-		_ = b.Close()
+		_ = app.Close()
 	}()
 
 	<-shutdown

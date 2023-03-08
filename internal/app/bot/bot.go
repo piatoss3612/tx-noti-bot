@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/piatoss3612/tx-noti-bot/internal/app"
 	"golang.org/x/exp/slog"
 )
 
@@ -15,7 +16,7 @@ type Bot struct {
 	session *discordgo.Session
 }
 
-func New(name, token string) (*Bot, error) {
+func New(name, token string) (app.App, error) {
 	session, err := discordgo.New("Bot " + token)
 	if err != nil {
 		return nil, err
@@ -24,7 +25,7 @@ func New(name, token string) (*Bot, error) {
 	return &Bot{name, session}, nil
 }
 
-func (b *Bot) Setup() *Bot {
+func (b *Bot) Setup() app.App {
 	slog.Info(fmt.Sprintf("Start setup process of %s", b.name))
 
 	b.session.AddHandler(ping)
