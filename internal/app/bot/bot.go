@@ -9,26 +9,27 @@ import (
 )
 
 type Bot struct {
-	s *discordgo.Session
+	name    string
+	session *discordgo.Session
 }
 
-func New(token string) (*Bot, error) {
-	s, err := discordgo.New("Bot " + token)
+func New(name, token string) (*Bot, error) {
+	session, err := discordgo.New("Bot " + token)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Bot{s}, nil
+	return &Bot{name, session}, nil
 }
 
 func (b *Bot) Setup() *Bot {
-	b.s.AddHandler(ping)
-	b.s.Identify.Intents = discordgo.IntentGuilds | discordgo.IntentGuildMessages
+	b.session.AddHandler(ping)
+	b.session.Identify.Intents = discordgo.IntentGuilds | discordgo.IntentGuildMessages
 	return b
 }
 
 func (b *Bot) Open() (<-chan bool, error) {
-	err := b.s.Open()
+	err := b.session.Open()
 	if err != nil {
 		return nil, err
 	}
@@ -53,5 +54,5 @@ func (b *Bot) Open() (<-chan bool, error) {
 }
 
 func (b *Bot) Close() error {
-	return b.s.Close()
+	return b.session.Close()
 }
