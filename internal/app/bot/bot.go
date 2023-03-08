@@ -1,11 +1,13 @@
 package bot
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"golang.org/x/exp/slog"
 )
 
 type Bot struct {
@@ -23,16 +25,25 @@ func New(name, token string) (*Bot, error) {
 }
 
 func (b *Bot) Setup() *Bot {
+	slog.Info(fmt.Sprintf("Start setup process of %s", b.name))
+
 	b.session.AddHandler(ping)
 	b.session.Identify.Intents = discordgo.IntentGuilds | discordgo.IntentGuildMessages
+
+	slog.Info(fmt.Sprintf("%s is now ready to start!", b.name))
+
 	return b
 }
 
 func (b *Bot) Open() (<-chan bool, error) {
+	slog.Info("Open connection to discord server...")
+
 	err := b.session.Open()
 	if err != nil {
 		return nil, err
 	}
+
+	slog.Info(fmt.Sprintf("%s is now running!", b.name))
 
 	shutdown := make(chan bool)
 
@@ -54,5 +65,11 @@ func (b *Bot) Open() (<-chan bool, error) {
 }
 
 func (b *Bot) Close() error {
-	return b.session.Close()
+	slog.Info(fmt.Sprintf("Close connection of %s...", b.name))
+
+	_ = b.session.Close()
+
+	slog.Info("Done closing process!")
+
+	return nil
 }
