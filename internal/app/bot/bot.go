@@ -11,7 +11,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-type Bot struct {
+type bot struct {
 	name    string
 	session *discordgo.Session
 }
@@ -22,10 +22,10 @@ func New(name, token string) (app.App, error) {
 		return nil, err
 	}
 
-	return &Bot{name, session}, nil
+	return &bot{name, session}, nil
 }
 
-func (b *Bot) Setup() app.App {
+func (b *bot) Setup() app.App {
 	slog.Info(fmt.Sprintf("Start setup process of %s", b.name))
 
 	b.session.AddHandler(ping)
@@ -36,7 +36,7 @@ func (b *Bot) Setup() app.App {
 	return b
 }
 
-func (b *Bot) Open() (<-chan bool, error) {
+func (b *bot) Open() (<-chan bool, error) {
 	slog.Info("Open connection to discord server...")
 
 	err := b.session.Open()
@@ -65,7 +65,7 @@ func (b *Bot) Open() (<-chan bool, error) {
 	return shutdown, nil
 }
 
-func (b *Bot) Close() error {
+func (b *bot) Close() error {
 	slog.Info(fmt.Sprintf("Close connection of %s...", b.name))
 
 	_ = b.session.Close()
