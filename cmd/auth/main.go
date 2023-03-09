@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/piatoss3612/tx-noti-bot/internal/app/rest"
+	"github.com/piatoss3612/tx-noti-bot/internal/handler/auth"
 	"github.com/piatoss3612/tx-noti-bot/internal/logger"
 )
 
@@ -16,7 +17,12 @@ var (
 func main() {
 	logger.SetStructuredLogger(NAME, os.Stdout)
 
-	app, err := rest.New(NAME, PORT, nil)
+	hdr, err := auth.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	app, err := rest.New(NAME, PORT, hdr)
 	if err != nil {
 		log.Fatal(err)
 	}

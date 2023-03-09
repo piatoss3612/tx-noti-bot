@@ -16,7 +16,10 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-var ErrInvalidPortNumber = errors.New("invalid port number")
+var (
+	ErrInvalidPortNumber = errors.New("invalid port number")
+	ErrHandlerMissed     = errors.New("handler is missed; it is required")
+)
 
 type rest struct {
 	// TODO: appropriate fields
@@ -34,6 +37,10 @@ func New(name, port string, handler handler.Handler) (app.App, error) {
 
 	if n < 1 || n > 65535 {
 		return nil, ErrInvalidPortNumber
+	}
+
+	if handler == nil {
+		return nil, ErrHandlerMissed
 	}
 
 	return &rest{name: name, port: port, hdr: handler}, nil
