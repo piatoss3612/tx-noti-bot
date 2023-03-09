@@ -99,6 +99,11 @@ func (r *rest) Close() error {
 		return err
 	}
 
+	err = r.hdr.Cleanup()
+	if err != nil {
+		return err
+	}
+
 	slog.Info("Done closing process!")
 
 	return nil
