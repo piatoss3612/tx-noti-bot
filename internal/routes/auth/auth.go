@@ -5,18 +5,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/piatoss3612/tx-noti-bot/internal/handler"
+	"github.com/piatoss3612/tx-noti-bot/internal/routes"
 )
 
-type authHandler struct {
+type authRouteController struct {
 	// TODO: appropriate fields
 }
 
-func New() (handler.Handler, error) {
-	return &authHandler{}, nil
+func New() (routes.RouteController, error) {
+	return &authRouteController{}, nil
 }
 
-func (a *authHandler) Routes() http.Handler {
+func (a *authRouteController) Routes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Use(middleware.Logger)
@@ -29,8 +29,4 @@ func (a *authHandler) Routes() http.Handler {
 	})
 
 	return mux
-}
-
-func (a *authHandler) Cleanup() error {
-	return nil
 }

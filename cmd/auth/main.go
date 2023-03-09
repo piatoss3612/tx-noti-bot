@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/piatoss3612/tx-noti-bot/internal/app/rest"
-	"github.com/piatoss3612/tx-noti-bot/internal/handler/auth"
 	"github.com/piatoss3612/tx-noti-bot/internal/logger"
+	"github.com/piatoss3612/tx-noti-bot/internal/routes/auth"
 )
 
 var (

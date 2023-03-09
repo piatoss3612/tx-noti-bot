@@ -12,24 +12,24 @@ import (
 	"time"
 
 	"github.com/piatoss3612/tx-noti-bot/internal/app"
-	"github.com/piatoss3612/tx-noti-bot/internal/handler"
+	"github.com/piatoss3612/tx-noti-bot/internal/routes"
 	"golang.org/x/exp/slog"
 )
 
 var (
-	ErrInvalidPortNumber = errors.New("invalid port number")
-	ErrHandlerMissed     = errors.New("handler is missed; it is required")
+	ErrInvalidPortNumber     = errors.New("invalid port number")
+	ErrRouteControllerMissed = errors.New("route controller is missed; but is required")
 )
 
 type rest struct {
 	// TODO: appropriate fields
 	name string
 	port string
-	hdr  handler.Handler
+	rc   routes.RouteController
 	srv  *http.Server
 }
 
-func New(name, port string, handler handler.Handler) (app.App, error) {
+func New(name, port string, rc routes.RouteController) (app.App, error) {
 	n, err := strconv.Atoi(port)
 	if err != nil {
 		return nil, errors.Join(ErrInvalidPortNumber, err)
@@ -39,11 +39,11 @@ func New(name, port string, handler handler.Handler) (app.App, error) {
 		return nil, ErrInvalidPortNumber
 	}
 
-	if handler == nil {
-		return nil, ErrHandlerMissed
+	if rc == nil {
+		return nil, ErrRouteControllerMissed
 	}
 
-	return &rest{name: name, port: port, hdr: handler}, nil
+	return &rest{name: name, port: port, rc: rc}, nil
 }
 
 func (r *rest) Setup() app.App {
@@ -51,7 +51,7 @@ func (r *rest) Setup() app.App {
 
 	r.srv = &http.Server{
 		Addr:    fmt.Sprintf(":%s", r.port),
-		Handler: r.hdr.Routes(),
+		Handler: r.rc.Routes(),
 	}
 
 	slog.Info(fmt.Sprintf("%s server is now available", r.name))
@@ -95,11 +95,6 @@ func (r *rest) Close() error {
 	defer cancel()
 
 	err := r.srv.Shutdown(ctx)
-	if err != nil {
-		return err
-	}
-
-	err = r.hdr.Cleanup()
 	if err != nil {
 		return err
 	}
