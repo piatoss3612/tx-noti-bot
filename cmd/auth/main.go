@@ -16,7 +16,7 @@ var (
 func main() {
 	logger.SetStructuredLogger(NAME, os.Stdout)
 
-	app, err := rest.New(NAME, PORT)
+	app, err := rest.New(NAME, PORT, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

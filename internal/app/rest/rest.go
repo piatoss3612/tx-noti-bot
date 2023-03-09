@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/piatoss3612/tx-noti-bot/internal/app"
+	"github.com/piatoss3612/tx-noti-bot/internal/handler"
 	"golang.org/x/exp/slog"
 )
 
@@ -21,10 +22,11 @@ type rest struct {
 	// TODO: appropriate fields
 	name string
 	port string
+	hdr  handler.Handler
 	srv  *http.Server
 }
 
-func New(name, port string) (app.App, error) {
+func New(name, port string, handler handler.Handler) (app.App, error) {
 	n, err := strconv.Atoi(port)
 	if err != nil {
 		return nil, errors.Join(ErrInvalidPortNumber, err)
@@ -34,7 +36,7 @@ func New(name, port string) (app.App, error) {
 		return nil, ErrInvalidPortNumber
 	}
 
-	return &rest{name: name, port: port}, nil
+	return &rest{name: name, port: port, hdr: handler}, nil
 }
 
 func (r *rest) Setup() app.App {
@@ -42,7 +44,7 @@ func (r *rest) Setup() app.App {
 
 	r.srv = &http.Server{
 		Addr:    fmt.Sprintf(":%s", r.port),
-		Handler: nil,
+		Handler: r.hdr.Routes(),
 	}
 
 	slog.Info(fmt.Sprintf("%s server is now available", r.name))
