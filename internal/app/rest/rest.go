@@ -2,36 +2,57 @@ package rest
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
 	"github.com/piatoss3612/tx-noti-bot/internal/app"
+	"golang.org/x/exp/slog"
 )
+
+var ErrInvalidPortNumber = errors.New("invalid port number")
 
 type rest struct {
 	// TODO: appropriate fields
-	addr string
+	name string
+	port string
 	srv  *http.Server
 }
 
-func New(addr string) (app.App, error) {
-	// TODO: address validation
-	// TODO: add handler
-	return &rest{addr: addr}, nil
+func New(name, port string) (app.App, error) {
+	n, err := strconv.Atoi(port)
+	if err != nil {
+		return nil, errors.Join(ErrInvalidPortNumber, err)
+	}
+
+	if n < 1 || n > 65535 {
+		return nil, ErrInvalidPortNumber
+	}
+
+	return &rest{name: name, port: port}, nil
 }
 
-func (a *rest) Setup() app.App {
-	a.srv = &http.Server{
-		Addr:    a.addr,
+func (r *rest) Setup() app.App {
+	slog.Info(fmt.Sprintf("Start setup %s server", r.name))
+
+	r.srv = &http.Server{
+		Addr:    fmt.Sprintf(":%s", r.port),
 		Handler: nil,
 	}
-	return a
+
+	slog.Info(fmt.Sprintf("%s server is now available", r.name))
+
+	return r
 }
 
-func (a *rest) Open() (<-chan bool, error) {
+func (r *rest) Open() (<-chan bool, error) {
+	slog.Info(fmt.Sprintf("Open %s server...", r.name))
+
 	shutdown := make(chan bool)
 
 	gracefulShutdown := make(chan os.Signal, 1)
@@ -43,25 +64,33 @@ func (a *rest) Open() (<-chan bool, error) {
 	)
 
 	go func() {
-		_ = a.srv.ListenAndServe()
+		_ = r.srv.ListenAndServe()
+	}()
 
+	go func() {
 		<-gracefulShutdown
 
 		close(gracefulShutdown)
 		close(shutdown)
 	}()
 
+	slog.Info(fmt.Sprintf("%s is now running!", r.name))
+
 	return shutdown, nil
 }
 
-func (a *rest) Close() error {
+func (r *rest) Close() error {
+	slog.Info(fmt.Sprintf("Close %s server...", r.name))
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err := a.srv.Shutdown(ctx)
+	err := r.srv.Shutdown(ctx)
 	if err != nil {
 		return err
 	}
+
+	slog.Info("Done closing process!")
 
 	return nil
 }
