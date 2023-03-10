@@ -5,16 +5,17 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/piatoss3612/tx-noti-bot/internal/handler"
+	"github.com/piatoss3612/tx-noti-bot/internal/repository/user"
 )
 
 var ErrTargetUnsupported = errors.New("target is unsupported")
 
 type authHandler struct {
-	// TODO: add DB
+	repo user.UserRepository
 }
 
-func New() (handler.Handler, error) {
-	return &authHandler{}, nil
+func New(repo user.UserRepository) handler.Handler {
+	return &authHandler{repo: repo}
 }
 
 func (a *authHandler) Inject(target any) error {
