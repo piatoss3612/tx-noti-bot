@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/piatoss3612/tx-noti-bot/internal/handler"
 	"github.com/piatoss3612/tx-noti-bot/internal/routes"
 )
@@ -19,8 +18,6 @@ func New(hdr handler.Handler) routes.RouteController {
 
 func (a *authRouteController) Routes() http.Handler {
 	mux := chi.NewRouter()
-	mux.Use(middleware.Logger)
-
 	a.hdr.Inject(mux)
 
 	return mux

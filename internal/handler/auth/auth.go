@@ -28,7 +28,6 @@ func (a *authHandler) Inject(target any) error {
 	mux.Route("/auth/v1", func(r chi.Router) {
 		r.Route("/user", func(sr chi.Router) {
 			sr.Post("/register", a.RegisterUser)
-			sr.Post("/login", a.LoginUser)
 			sr.Post("/delete", a.DeleteUser)
 		})
 
