@@ -12,4 +12,5 @@ type UserRepository interface {
 	GetUserByID(ctx context.Context, id string) (*models.User, error)
 	UpdateUser(ctx context.Context, u *models.User) error
 	DeleteUser(ctx context.Context, id string) error
+	Drop(ctx context.Context) error
 }
