@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/piatoss3612/tx-noti-bot/internal/handler"
+	"github.com/piatoss3612/tx-noti-bot/internal/middlewares"
 	"github.com/piatoss3612/tx-noti-bot/internal/repository/user"
 )
 
@@ -25,6 +26,7 @@ func (a *authHandler) Inject(target any) error {
 	}
 
 	// TODO: add middlewares?
+	mux.Use(middlewares.Logger)
 
 	mux.Route("/auth/v1", func(r chi.Router) {
 		r.Route("/user", func(sr chi.Router) {
