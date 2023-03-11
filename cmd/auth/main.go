@@ -30,6 +30,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		err = repo.Disconnect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	hdr := hdr.New(repo)
 

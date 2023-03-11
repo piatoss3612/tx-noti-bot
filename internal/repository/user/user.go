@@ -13,4 +13,5 @@ type UserRepository interface {
 	UpdateUser(ctx context.Context, u *models.User) error
 	DeleteUser(ctx context.Context, id string) error
 	Drop(ctx context.Context) error
+	Disconnect(ctx context.Context) error
 }

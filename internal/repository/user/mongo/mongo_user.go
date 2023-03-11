@@ -18,20 +18,26 @@ type mongoUserRepository struct {
 }
 
 func New(ctx context.Context, name, uri string) (user.UserRepository, error) {
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+	client, err := connectMongo(ctx, uri)
 	if err != nil {
 		return nil, err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	defer cancel()
+	return &mongoUserRepository{name: name, client: client}, nil
+}
+
+func connectMongo(ctx context.Context, uri string) (*mongo.Client, error) {
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+	if err != nil {
+		return nil, err
+	}
 
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		return nil, err
 	}
 
-	return &mongoUserRepository{client: client}, nil
+	return client, nil
 }
 
 func (m *mongoUserRepository) getCollection() *mongo.Collection {
@@ -121,4 +127,8 @@ func (m *mongoUserRepository) Drop(ctx context.Context) error {
 	coll := m.getCollection()
 
 	return coll.Drop(ctx)
+}
+
+func (m *mongoUserRepository) Disconnect(ctx context.Context) error {
+	return m.client.Disconnect(ctx)
 }
