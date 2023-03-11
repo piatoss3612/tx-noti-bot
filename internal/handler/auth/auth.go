@@ -27,6 +27,7 @@ func (a *authHandler) Inject(target any) error {
 
 	// TODO: add middlewares?
 	mux.Use(middlewares.Logger)
+	mux.Use(middlewares.Ping("/auth/v1/ping"))
 
 	mux.Route("/auth/v1", func(r chi.Router) {
 		r.Route("/user", func(sr chi.Router) {
