@@ -25,11 +25,12 @@ func (a *authHandler) Inject(target any) error {
 		return ErrTargetUnsupported
 	}
 
-	// TODO: add middlewares?
 	mux.Use(middlewares.Logger)
 	mux.Use(middlewares.Ping("/auth/v1/ping"))
 
 	mux.Route("/auth/v1", func(r chi.Router) {
+		r.Use(middlewares.RestrictContentTypeToJSON(false))
+
 		r.Route("/user", func(sr chi.Router) {
 			sr.Post("/register", a.RegisterUser)
 			sr.Post("/delete", a.DeleteUser)
