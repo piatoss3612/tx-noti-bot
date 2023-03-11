@@ -42,7 +42,3 @@ func (a *authHandler) Inject(target any) error {
 
 	return nil
 }
-
-func (a *authHandler) Cleanup() error {
-	return nil
-}
