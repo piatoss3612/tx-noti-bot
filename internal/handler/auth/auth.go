@@ -26,6 +26,7 @@ func (a *authHandler) Inject(target any) error {
 	}
 
 	mux.Use(middlewares.Logger)
+	mux.Use(middlewares.Recovery(true))
 	mux.Use(middlewares.Ping("/auth/v1/ping"))
 
 	mux.Route("/auth/v1", func(r chi.Router) {
