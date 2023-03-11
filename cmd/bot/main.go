@@ -6,6 +6,7 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/piatoss3612/tx-noti-bot/internal/app/bot"
+	hdr "github.com/piatoss3612/tx-noti-bot/internal/handler/bot"
 	"github.com/piatoss3612/tx-noti-bot/internal/logger"
 )
 
@@ -14,7 +15,9 @@ var BOT_NAME = "Tx-Noti-Bot"
 func main() {
 	logger.SetStructuredLogger(BOT_NAME, os.Stdout)
 
-	app, err := bot.New(BOT_NAME, os.Getenv("DISCORD_TOKEN"))
+	handler := hdr.New()
+
+	app, err := bot.New(BOT_NAME, os.Getenv("DISCORD_TOKEN"), handler)
 	if err != nil {
 		log.Fatal(err)
 	}

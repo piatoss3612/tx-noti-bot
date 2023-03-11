@@ -7,25 +7,26 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/piatoss3612/tx-noti-bot/internal/app"
+	"github.com/piatoss3612/tx-noti-bot/internal/handler"
 )
 
 type bot struct {
 	name    string
+	handler handler.Handler
 	session *discordgo.Session
 }
 
-func New(name, token string) (app.App, error) {
+func New(name, token string, handler handler.Handler) (app.App, error) {
 	session, err := discordgo.New("Bot " + token)
 	if err != nil {
 		return nil, err
 	}
 
-	return &bot{name: name, session: session}, nil
+	return &bot{name: name, handler: handler, session: session}, nil
 }
 
 func (b *bot) Setup() app.App {
-	b.session.AddHandler(ping)
-	b.session.Identify.Intents = discordgo.IntentGuilds | discordgo.IntentGuildMessages
+	b.handler.Inject(b.session)
 
 	return b
 }
