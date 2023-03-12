@@ -33,15 +33,16 @@ func (a *authHandler) Inject(target any) error {
 		r.Use(middlewares.RestrictContentTypeToJSON(false))
 
 		r.Route("/user", func(sr chi.Router) {
-			sr.Post("/register", a.RegisterUser)
-			sr.Post("/delete", a.DeleteUser)
+			sr.Post("/register", a.registerUser)
+			sr.Post("/login", a.loginUser)
+			sr.Post("/delete", a.deleteUser)
 		})
 
 		r.Route("/otp", func(sr chi.Router) {
-			sr.Post("/enable", a.EnableOTP)
-			sr.Post("/disable", a.DisableOTP)
-			sr.Post("/verify", a.VerifyOTP)
-			sr.Post("/validate", a.ValidateOTP)
+			sr.Post("/generate", a.generateOTP)
+			sr.Post("/verify", a.verifyOTP)
+			sr.Post("/validate", a.validateOTP)
+			sr.Post("/disable", a.disableOTP)
 		})
 	})
 

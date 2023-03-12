@@ -1,11 +1,13 @@
 package auth
 
-import "net/http"
+import (
+	"net/http"
+)
 
-func (a *authHandler) EnableOTP(w http.ResponseWriter, r *http.Request) {}
+func (a *authHandler) generateOTP(w http.ResponseWriter, r *http.Request) {}
 
-func (a *authHandler) DisableOTP(w http.ResponseWriter, r *http.Request) {}
+func (a *authHandler) verifyOTP(w http.ResponseWriter, r *http.Request) {}
 
-func (a *authHandler) VerifyOTP(w http.ResponseWriter, r *http.Request) {}
+func (a *authHandler) validateOTP(w http.ResponseWriter, r *http.Request) {}
 
-func (a *authHandler) ValidateOTP(w http.ResponseWriter, r *http.Request) {}
+func (a *authHandler) disableOTP(w http.ResponseWriter, r *http.Request) {}

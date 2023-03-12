@@ -7,13 +7,13 @@ import (
 	"github.com/piatoss3612/tx-noti-bot/internal/models"
 )
 
-func (a *authHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
+func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
 	// read payload
 	var payload models.UserPayload
 
 	err := helpers.ReadJSON(w, r, &payload)
 	if err != nil {
-		helpers.ErrorJSON(w, http.StatusBadRequest, "") // TODO: error message
+		helpers.ErrorJSON(w, http.StatusBadRequest, "")
 		return
 	}
 
@@ -39,7 +39,9 @@ func (a *authHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, resp)
 }
 
-func (a *authHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (a *authHandler) loginUser(w http.ResponseWriter, r *http.Request) {}
+
+func (a *authHandler) deleteUser(w http.ResponseWriter, r *http.Request) {
 	// read payload
 	var payload models.UserPayload
 

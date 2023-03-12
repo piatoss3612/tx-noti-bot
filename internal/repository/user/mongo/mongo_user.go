@@ -89,7 +89,7 @@ func (m *mongoUserRepository) GetUserByID(ctx context.Context, id string) (*mode
 
 	var user models.User
 
-	err := coll.FindOne(ctx, bson.M{"id": id}).Decode(&user)
+	err := coll.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func (m *mongoUserRepository) GetUserByID(ctx context.Context, id string) (*mode
 func (m *mongoUserRepository) UpdateUser(ctx context.Context, u *models.User) error {
 	coll := m.getCollection()
 
-	_, err := coll.UpdateOne(ctx, bson.M{"id": u.ID}, bson.D{
+	_, err := coll.UpdateOne(ctx, bson.M{"_id": u.ID}, bson.D{
 		{
 			Key: "$set", Value: bson.D{
 				{Key: "email", Value: u.Email},
@@ -118,7 +118,7 @@ func (m *mongoUserRepository) UpdateUser(ctx context.Context, u *models.User) er
 func (m *mongoUserRepository) DeleteUser(ctx context.Context, id string) error {
 	coll := m.getCollection()
 
-	_, err := coll.DeleteOne(ctx, bson.M{"id": id})
+	_, err := coll.DeleteOne(ctx, bson.M{"_id": id})
 
 	return err
 }
