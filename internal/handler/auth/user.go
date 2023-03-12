@@ -36,10 +36,38 @@ func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
 
 	resp.StatusCode = http.StatusOK
 
-	helpers.WriteJSON(w, http.StatusOK, resp)
+	_ = helpers.WriteJSON(w, http.StatusOK, resp)
 }
 
-func (a *authHandler) loginUser(w http.ResponseWriter, r *http.Request) {}
+func (a *authHandler) loginUser(w http.ResponseWriter, r *http.Request) {
+	var payload models.UserPayload
+
+	err := helpers.ReadJSON(w, r, &payload)
+	if err != nil {
+		helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		return
+	}
+
+	// TODO: validate ID
+
+	user, err := a.repo.GetUserByID(r.Context(), payload.ID)
+	if err != nil {
+		helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		return
+	}
+
+	var resp models.UserResponse
+
+	resp.StatusCode = http.StatusOK
+	resp.User.ID = user.ID
+	resp.User.Email = user.Email
+	resp.User.DiscordID = user.DiscordID
+	resp.User.OtpEnabled = user.OtpEnabled
+	resp.User.OtpVerified = user.OtpVerified
+	resp.User.CreatedAt = user.CreatedAt
+
+	_ = helpers.WriteJSON(w, http.StatusOK, resp)
+}
 
 func (a *authHandler) deleteUser(w http.ResponseWriter, r *http.Request) {
 	// read payload
