@@ -41,8 +41,8 @@ func (a *authHandler) Inject(target any) error {
 
 		r.Route("/otp", func(sr chi.Router) {
 			sr.Post("/generate", a.generateOTP)
-			sr.Post("/verify", a.verifyOTP)
-			sr.Post("/validate", a.validateOTP)
+			sr.Post("/verify", a.verifyOTP)     // TODO: nocache middleware
+			sr.Post("/validate", a.validateOTP) // TODO: nocache middleware
 			sr.Post("/disable", a.disableOTP)
 		})
 	})
