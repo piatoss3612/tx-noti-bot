@@ -3,7 +3,7 @@ package models
 import "time"
 
 type User struct {
-	ID          string    `json:"id" bson:"id"`
+	ID          string    `json:"id" bson:"_id"`
 	Email       string    `json:"email,omitempty" bson:"email,omitempty"`
 	DiscordID   string    `json:"discord_id,omitempty" bson:"discord_id,omitempty"`
 	OtpEnabled  bool      `json:"otp_enabled" bson:"otp_enabled"`
