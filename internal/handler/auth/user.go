@@ -2,9 +2,11 @@ package auth
 
 import (
 	"net/http"
+	"regexp"
 
 	"github.com/piatoss3612/tx-noti-bot/internal/helpers"
 	"github.com/piatoss3612/tx-noti-bot/internal/models"
+	"golang.org/x/exp/slog"
 )
 
 func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
@@ -13,25 +15,33 @@ func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
 
 	err := helpers.ReadJSON(w, r, &payload)
 	if err != nil {
-		helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid payload")
+		slog.Error("error while reading json", err)
 		return
 	}
 
-	// create user data
+	// check if id is valid ethereum address
+	if !isValidAddress(payload.ID) {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id")
+		return
+	}
+
+	// create new user
 	var user models.User
 
 	user.ID = payload.ID
 	user.Email = payload.Email
 	user.DiscordID = payload.DiscordID
 
-	// insert user data to DB
+	// insert user into db
 	err = a.repo.CreateUser(r.Context(), &user)
 	if err != nil {
-		helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		slog.Error("error while creating new user", err)
 		return
 	}
 
-	// write response
+	// send response
 	var resp models.CommonResponse
 
 	resp.StatusCode = http.StatusOK
@@ -40,22 +50,31 @@ func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *authHandler) loginUser(w http.ResponseWriter, r *http.Request) {
+	// read payload
 	var payload models.UserPayload
 
 	err := helpers.ReadJSON(w, r, &payload)
 	if err != nil {
-		helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid payload")
+		slog.Error("error while reading json", err)
 		return
 	}
 
-	// TODO: validate ID
+	// check if id is valid ethereum address
+	if !isValidAddress(payload.ID) {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id")
+		return
+	}
 
+	// get user by id
 	user, err := a.repo.GetUserByID(r.Context(), payload.ID)
 	if err != nil {
-		helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id or non-existing user")
+		slog.Error("error while retrieving user matched by id", err, "id", payload.ID)
 		return
 	}
 
+	// send response
 	var resp models.UserResponse
 
 	resp.StatusCode = http.StatusOK
@@ -75,21 +94,34 @@ func (a *authHandler) deleteUser(w http.ResponseWriter, r *http.Request) {
 
 	err := helpers.ReadJSON(w, r, &payload)
 	if err != nil {
-		helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid payload")
+		slog.Error("error while reading json", err)
 		return
 	}
 
-	// delete user data from DB by user id
+	// check if id is valid ethereum address
+	if !isValidAddress(payload.ID) {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id")
+		return
+	}
+
+	// delete user by id
 	err = a.repo.DeleteUser(r.Context(), payload.ID)
 	if err != nil {
-		helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id or non-existing user")
+		slog.Error("error while deleting user matched by id", err, "id", payload.ID)
 		return
 	}
 
-	// write response
+	// send response
 	var resp models.CommonResponse
 
 	resp.StatusCode = http.StatusOK
 
 	helpers.WriteJSON(w, http.StatusOK, resp)
+}
+
+func isValidAddress(s string) bool {
+	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
+	return re.MatchString(s)
 }
