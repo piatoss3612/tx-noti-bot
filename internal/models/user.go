@@ -41,7 +41,7 @@ type OtpResponse struct {
 	CommonResponse
 	Otp struct {
 		OtpEnabled  bool   `json:"otp_enabled"`
-		OtpVerified bool   `json:"otp_verified"`
+		OtpVerified bool   `json:"otp_verified,omitempty"`
 		OtpValid    bool   `json:"otp_valid,omitempty"`
 		OtpSecret   string `json:"otp_secret,omitempty"`
 		OtpUrl      string `json:"otp_url,omitempty"`

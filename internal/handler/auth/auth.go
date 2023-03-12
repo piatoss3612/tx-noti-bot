@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"regexp"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/piatoss3612/tx-noti-bot/internal/handler"
@@ -47,4 +48,9 @@ func (a *authHandler) Inject(target any) error {
 	})
 
 	return nil
+}
+
+func isValidAddress(s string) bool {
+	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
+	return re.MatchString(s)
 }

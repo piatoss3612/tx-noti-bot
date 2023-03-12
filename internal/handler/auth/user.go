@@ -2,7 +2,6 @@ package auth
 
 import (
 	"net/http"
-	"regexp"
 
 	"github.com/piatoss3612/tx-noti-bot/internal/helpers"
 	"github.com/piatoss3612/tx-noti-bot/internal/models"
@@ -15,7 +14,7 @@ func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
 
 	err := helpers.ReadJSON(w, r, &payload)
 	if err != nil {
-		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid payload")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, err.Error())
 		slog.Error("error while reading json", err)
 		return
 	}
@@ -36,7 +35,7 @@ func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
 	// insert user into db
 	err = a.repo.CreateUser(r.Context(), &user)
 	if err != nil {
-		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "unable to register user")
 		slog.Error("error while creating new user", err)
 		return
 	}
@@ -55,7 +54,7 @@ func (a *authHandler) loginUser(w http.ResponseWriter, r *http.Request) {
 
 	err := helpers.ReadJSON(w, r, &payload)
 	if err != nil {
-		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid payload")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, err.Error())
 		slog.Error("error while reading json", err)
 		return
 	}
@@ -94,7 +93,7 @@ func (a *authHandler) deleteUser(w http.ResponseWriter, r *http.Request) {
 
 	err := helpers.ReadJSON(w, r, &payload)
 	if err != nil {
-		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid payload")
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, err.Error())
 		slog.Error("error while reading json", err)
 		return
 	}
@@ -119,9 +118,4 @@ func (a *authHandler) deleteUser(w http.ResponseWriter, r *http.Request) {
 	resp.StatusCode = http.StatusOK
 
 	helpers.WriteJSON(w, http.StatusOK, resp)
-}
-
-func isValidAddress(s string) bool {
-	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
-	return re.MatchString(s)
 }
