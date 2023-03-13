@@ -2,7 +2,6 @@ package auth
 
 import (
 	"errors"
-	"regexp"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/piatoss3612/tx-noti-bot/internal/handler"
@@ -41,16 +40,11 @@ func (a *authHandler) Inject(target any) error {
 
 		r.Route("/otp", func(sr chi.Router) {
 			sr.Post("/generate", a.generateOTP)
-			sr.Post("/verify", a.verifyOTP)     // TODO: nocache middleware
-			sr.Post("/validate", a.validateOTP) // TODO: nocache middleware
+			sr.Post("/verify", a.verifyOTP)
+			sr.Post("/validate", a.validateOTP)
 			sr.Post("/disable", a.disableOTP)
 		})
 	})
 
 	return nil
-}
-
-func isValidAddress(s string) bool {
-	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
-	return re.MatchString(s)
 }

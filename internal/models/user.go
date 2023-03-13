@@ -40,7 +40,7 @@ type OtpPayload struct {
 type OtpResponse struct {
 	CommonResponse
 	Otp struct {
-		OtpEnabled  bool   `json:"otp_enabled"`
+		OtpEnabled  bool   `json:"otp_enabled,omitempty"`
 		OtpVerified bool   `json:"otp_verified,omitempty"`
 		OtpValid    bool   `json:"otp_valid,omitempty"`
 		OtpSecret   string `json:"otp_secret,omitempty"`

@@ -1,46 +1,44 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/piatoss3612/tx-noti-bot/internal/helpers"
 	"github.com/piatoss3612/tx-noti-bot/internal/models"
+	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/exp/slog"
 )
 
-func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
-	// read payload
-	var payload models.UserPayload
+var ErrInvalidUserID = errors.New("invalid user id")
 
-	err := helpers.ReadJSON(w, r, &payload)
+func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
+	payload, err := a.readUserPayloadAndVerify(w, r)
 	if err != nil {
 		_ = helpers.ErrorJSON(w, http.StatusBadRequest, err.Error())
-		slog.Error("error while reading json", err)
+		slog.Error("error while read and verify payload", err, "uri", r.RequestURI)
 		return
 	}
 
-	// check if id is valid ethereum address
-	if !isValidAddress(payload.ID) {
-		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id")
-		return
-	}
-
-	// create new user
 	var user models.User
 
 	user.ID = payload.ID
 	user.Email = payload.Email
 	user.DiscordID = payload.DiscordID
 
-	// insert user into db
 	err = a.repo.CreateUser(r.Context(), &user)
 	if err != nil {
-		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "unable to register user")
-		slog.Error("error while creating new user", err)
+		errMsg := "unable to register"
+
+		if mongo.IsDuplicateKeyError(err) {
+			errMsg = "user already registered"
+		}
+
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, errMsg)
+		slog.Error("error while creating user", err, "uri", r.RequestURI)
 		return
 	}
 
-	// send response
 	var resp models.CommonResponse
 
 	resp.StatusCode = http.StatusOK
@@ -49,31 +47,20 @@ func (a *authHandler) registerUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *authHandler) loginUser(w http.ResponseWriter, r *http.Request) {
-	// read payload
-	var payload models.UserPayload
-
-	err := helpers.ReadJSON(w, r, &payload)
+	payload, err := a.readUserPayloadAndVerify(w, r)
 	if err != nil {
 		_ = helpers.ErrorJSON(w, http.StatusBadRequest, err.Error())
-		slog.Error("error while reading json", err)
+		slog.Error("error while read and verify payload", err, "uri", r.RequestURI)
 		return
 	}
 
-	// check if id is valid ethereum address
-	if !isValidAddress(payload.ID) {
-		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id")
-		return
-	}
-
-	// get user by id
 	user, err := a.repo.GetUserByID(r.Context(), payload.ID)
 	if err != nil {
 		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id or non-existing user")
-		slog.Error("error while retrieving user matched by id", err, "id", payload.ID)
+		slog.Error("error while retrieving user matched by id", err, "id", payload.ID, "uri", r.RequestURI)
 		return
 	}
 
-	// send response
 	var resp models.UserResponse
 
 	resp.StatusCode = http.StatusOK
@@ -88,34 +75,38 @@ func (a *authHandler) loginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *authHandler) deleteUser(w http.ResponseWriter, r *http.Request) {
-	// read payload
-	var payload models.UserPayload
-
-	err := helpers.ReadJSON(w, r, &payload)
+	payload, err := a.readUserPayloadAndVerify(w, r)
 	if err != nil {
 		_ = helpers.ErrorJSON(w, http.StatusBadRequest, err.Error())
-		slog.Error("error while reading json", err)
+		slog.Error("error while read and verify payload", err, "uri", r.RequestURI)
 		return
 	}
 
-	// check if id is valid ethereum address
-	if !isValidAddress(payload.ID) {
-		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id")
-		return
-	}
-
-	// delete user by id
 	err = a.repo.DeleteUser(r.Context(), payload.ID)
 	if err != nil {
 		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id or non-existing user")
-		slog.Error("error while deleting user matched by id", err, "id", payload.ID)
+		slog.Error("error while deleting user matched by id", err, "id", payload.ID, "uri", r.RequestURI)
 		return
 	}
 
-	// send response
 	var resp models.CommonResponse
 
 	resp.StatusCode = http.StatusOK
 
 	helpers.WriteJSON(w, http.StatusOK, resp)
+}
+
+func (a *authHandler) readUserPayloadAndVerify(w http.ResponseWriter, r *http.Request) (*models.UserPayload, error) {
+	var payload models.UserPayload
+
+	err := helpers.ReadJSON(w, r, &payload)
+	if err != nil {
+		return nil, err
+	}
+
+	if !helpers.IsValidEthereumAddress(payload.ID) {
+		return nil, ErrInvalidUserID
+	}
+
+	return &payload, nil
 }
