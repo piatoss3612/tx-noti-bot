@@ -8,6 +8,7 @@ import (
 	"github.com/piatoss3612/tx-noti-bot/internal/app/bot"
 	hdr "github.com/piatoss3612/tx-noti-bot/internal/handler/bot"
 	"github.com/piatoss3612/tx-noti-bot/internal/logger"
+	"golang.org/x/exp/slog"
 )
 
 var BOT_NAME = "Tx-Noti-Bot"
@@ -17,10 +18,14 @@ func main() {
 
 	handler := hdr.New()
 
+	slog.Info("Starting setup for running discord bot...")
+
 	app, err := bot.New(BOT_NAME, os.Getenv("DISCORD_TOKEN"), handler)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	slog.Info("Open connection to discord server")
 
 	shutdown, err := app.Setup().Open()
 	if err != nil {
@@ -31,5 +36,9 @@ func main() {
 		_ = app.Close()
 	}()
 
+	slog.Info("Discord bot is now running!")
+
 	<-shutdown
+
+	slog.Info("Shutdown discord bot...")
 }

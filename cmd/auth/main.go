@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"github.com/piatoss3612/tx-noti-bot/internal/logger"
 	"github.com/piatoss3612/tx-noti-bot/internal/repository/user/mongo"
 	rc "github.com/piatoss3612/tx-noti-bot/internal/routes/auth"
+	"golang.org/x/exp/slog"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -22,6 +24,8 @@ var (
 
 func main() {
 	logger.SetStructuredLogger(NAME, os.Stdout)
+
+	slog.Info("Starting setup for running application...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -40,6 +44,8 @@ func main() {
 		}
 	}()
 
+	slog.Info("Successfully connected to MongoDB")
+
 	hdr := hdr.New(repo)
 
 	rc := rc.New(hdr)
@@ -49,12 +55,17 @@ func main() {
 		log.Fatal(err)
 	}
 
+	slog.Info(fmt.Sprintf("Running application on port %s", PORT))
+
 	shutdown, err := app.Setup().Open()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	defer app.Close()
 
+	slog.Info("Application is now running!")
+
 	<-shutdown
+
+	slog.Info("Shutdown application...")
 }

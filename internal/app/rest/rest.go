@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -65,7 +66,9 @@ func (r *rest) Open() (<-chan bool, error) {
 	)
 
 	go func() {
-		_ = r.srv.ListenAndServe()
+		if err := r.srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal(err)
+		}
 	}()
 
 	go func() {
