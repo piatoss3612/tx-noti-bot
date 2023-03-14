@@ -1,1 +1,3 @@
 .env
+build/auth_app
+build/discord_bot
