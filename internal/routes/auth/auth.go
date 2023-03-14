@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/piatoss3612/tx-noti-bot/internal/handler"
-	"github.com/piatoss3612/tx-noti-bot/internal/routes"
+	"github.com/piatoss3612/tx-notification/internal/handler"
+	"github.com/piatoss3612/tx-notification/internal/routes"
 )
 
 type authRouteController struct {

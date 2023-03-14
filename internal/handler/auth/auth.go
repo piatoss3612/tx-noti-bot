@@ -4,9 +4,9 @@ import (
 	"errors"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/piatoss3612/tx-noti-bot/internal/handler"
-	"github.com/piatoss3612/tx-noti-bot/internal/middlewares"
-	"github.com/piatoss3612/tx-noti-bot/internal/repository/user"
+	"github.com/piatoss3612/tx-notification/internal/handler"
+	"github.com/piatoss3612/tx-notification/internal/middlewares"
+	"github.com/piatoss3612/tx-notification/internal/repository/user"
 )
 
 var ErrTargetUnsupported = errors.New("target is unsupported")

@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	"github.com/piatoss3612/tx-noti-bot/internal/models"
+	"github.com/piatoss3612/tx-notification/internal/models"
 )
 
 type UserRepository interface {

@@ -7,11 +7,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/piatoss3612/tx-noti-bot/internal/app/rest"
-	hdr "github.com/piatoss3612/tx-noti-bot/internal/handler/auth"
-	"github.com/piatoss3612/tx-noti-bot/internal/logger"
-	"github.com/piatoss3612/tx-noti-bot/internal/repository/user/mongo"
-	rc "github.com/piatoss3612/tx-noti-bot/internal/routes/auth"
+	"github.com/piatoss3612/tx-notification/internal/app/rest"
+	hdr "github.com/piatoss3612/tx-notification/internal/handler/auth"
+	"github.com/piatoss3612/tx-notification/internal/logger"
+	"github.com/piatoss3612/tx-notification/internal/repository/user/mongo"
+	rc "github.com/piatoss3612/tx-notification/internal/routes/auth"
 	"golang.org/x/exp/slog"
 
 	_ "github.com/joho/godotenv/autoload"

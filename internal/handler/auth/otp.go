@@ -3,8 +3,8 @@ package auth
 import (
 	"net/http"
 
-	"github.com/piatoss3612/tx-noti-bot/internal/helpers"
-	"github.com/piatoss3612/tx-noti-bot/internal/models"
+	"github.com/piatoss3612/tx-notification/internal/helpers"
+	"github.com/piatoss3612/tx-notification/internal/models"
 	"github.com/pquerna/otp/totp"
 	"golang.org/x/exp/slog"
 )

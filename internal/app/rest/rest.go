@@ -12,8 +12,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/piatoss3612/tx-noti-bot/internal/app"
-	"github.com/piatoss3612/tx-noti-bot/internal/routes"
+	"github.com/piatoss3612/tx-notification/internal/app"
+	"github.com/piatoss3612/tx-notification/internal/routes"
 )
 
 var (

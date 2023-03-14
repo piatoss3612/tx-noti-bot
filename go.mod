@@ -1,4 +1,4 @@
-module github.com/piatoss3612/tx-noti-bot
+module github.com/piatoss3612/tx-notification
 
 go 1.20
 

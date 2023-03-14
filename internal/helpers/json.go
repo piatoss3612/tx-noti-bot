@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/piatoss3612/tx-noti-bot/internal/models"
+	"github.com/piatoss3612/tx-notification/internal/models"
 )
 
 const MaxRequestBodyBytes = 1 << 20

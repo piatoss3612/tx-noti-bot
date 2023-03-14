@@ -5,9 +5,9 @@ import (
 	"os"
 
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/piatoss3612/tx-noti-bot/internal/app/bot"
-	hdr "github.com/piatoss3612/tx-noti-bot/internal/handler/bot"
-	"github.com/piatoss3612/tx-noti-bot/internal/logger"
+	"github.com/piatoss3612/tx-notification/internal/app/bot"
+	hdr "github.com/piatoss3612/tx-notification/internal/handler/bot"
+	"github.com/piatoss3612/tx-notification/internal/logger"
 	"golang.org/x/exp/slog"
 )
 

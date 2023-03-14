@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/piatoss3612/tx-noti-bot/internal/handler"
+	"github.com/piatoss3612/tx-notification/internal/handler"
 )
 
 var ErrTargetUnsupported = errors.New("target is unsupported")

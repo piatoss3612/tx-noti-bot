@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/piatoss3612/tx-noti-bot/internal/models"
-	"github.com/piatoss3612/tx-noti-bot/internal/repository/user"
+	"github.com/piatoss3612/tx-notification/internal/models"
+	"github.com/piatoss3612/tx-notification/internal/repository/user"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
