@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  discord:
+    container_name: discord
+    build:
+      context: ./build
+      dockerfile: discord.Dockerfile
+    restart: always
+    deploy:
+      mode: global
+    environment:
+      DISCORD_TOKEN: 
+
+  auth:
+    container_name: auth
+    build:
+      context: ./build
+      dockerfile: auth.Dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - 8080:80
+    environment:
+      MONGO_URI: 

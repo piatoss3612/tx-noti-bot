@@ -1,3 +1,4 @@
 .env
-build/auth_app
-build/discord_bot
+docker-compose.yaml
+build/auth
+build/discord
