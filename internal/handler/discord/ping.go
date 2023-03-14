@@ -1,4 +1,4 @@
-package bot
+package discord
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func (b *botHandler) ping(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (d *discordHandler) ping(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}

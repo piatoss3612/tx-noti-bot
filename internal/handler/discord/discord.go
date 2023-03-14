@@ -1,4 +1,4 @@
-package bot
+package discord
 
 import (
 	"errors"
@@ -9,21 +9,20 @@ import (
 
 var ErrTargetUnsupported = errors.New("target is unsupported")
 
-type botHandler struct {
-}
+type discordHandler struct{}
 
 func New() handler.Handler {
-	return &botHandler{}
+	return &discordHandler{}
 }
 
-func (b *botHandler) Inject(target any) error {
+func (d *discordHandler) Inject(target any) error {
 	session, ok := (target).(*discordgo.Session)
 	if !ok {
 		return ErrTargetUnsupported
 	}
 
 	session.Identify.Intents = discordgo.IntentGuilds | discordgo.IntentGuildMessages
-	session.AddHandler(b.ping)
+	session.AddHandler(d.ping)
 
 	return nil
 }

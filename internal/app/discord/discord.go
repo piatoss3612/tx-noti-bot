@@ -1,4 +1,4 @@
-package bot
+package discord
 
 import (
 	"os"
@@ -10,7 +10,7 @@ import (
 	"github.com/piatoss3612/tx-notification/internal/handler"
 )
 
-type bot struct {
+type discord struct {
 	name    string
 	handler handler.Handler
 	session *discordgo.Session
@@ -22,17 +22,17 @@ func New(name, token string, handler handler.Handler) (app.App, error) {
 		return nil, err
 	}
 
-	return &bot{name: name, handler: handler, session: session}, nil
+	return &discord{name: name, handler: handler, session: session}, nil
 }
 
-func (b *bot) Setup() app.App {
-	b.handler.Inject(b.session)
+func (d *discord) Setup() app.App {
+	d.handler.Inject(d.session)
 
-	return b
+	return d
 }
 
-func (b *bot) Open() (<-chan bool, error) {
-	err := b.session.Open()
+func (d *discord) Open() (<-chan bool, error) {
+	err := d.session.Open()
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +56,6 @@ func (b *bot) Open() (<-chan bool, error) {
 	return shutdown, nil
 }
 
-func (b *bot) Close() error {
-	return b.session.Close()
+func (d *discord) Close() error {
+	return d.session.Close()
 }
