@@ -74,6 +74,38 @@ func (a *authHandler) loginUser(w http.ResponseWriter, r *http.Request) {
 	_ = helpers.WriteJSON(w, http.StatusOK, resp)
 }
 
+func (a *authHandler) updateUser(w http.ResponseWriter, r *http.Request) {
+	payload, err := a.readUserPayloadAndVerify(w, r)
+	if err != nil {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, err.Error())
+		slog.Error("error while read and verify payload", err, "uri", r.RequestURI)
+		return
+	}
+
+	user, err := a.repo.GetUserByID(r.Context(), payload.ID)
+	if err != nil {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id or non-existing user")
+		slog.Error("error while retrieving user matched by id", err, "id", payload.ID, "uri", r.RequestURI)
+		return
+	}
+
+	user.Email = payload.Email
+	user.DiscordID = payload.DiscordID
+
+	err = a.repo.UpdateUser(r.Context(), user)
+	if err != nil {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "unable to generate otp")
+		slog.Error("error while updating user", err, "uri", r.RequestURI)
+		return
+	}
+
+	var resp models.CommonResponse
+
+	resp.StatusCode = http.StatusOK
+
+	_ = helpers.WriteJSON(w, http.StatusOK, resp)
+}
+
 func (a *authHandler) deleteUser(w http.ResponseWriter, r *http.Request) {
 	payload, err := a.readUserPayloadAndVerify(w, r)
 	if err != nil {

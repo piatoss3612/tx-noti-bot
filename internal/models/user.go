@@ -33,8 +33,9 @@ type UserResponse struct {
 }
 
 type OtpPayload struct {
-	ID    string `json:"id"`
-	Token string `json:"token"`
+	ID        string `json:"id"`
+	DiscordID string `json:"discord_id"`
+	Token     string `json:"token"`
 }
 
 type OtpResponse struct {

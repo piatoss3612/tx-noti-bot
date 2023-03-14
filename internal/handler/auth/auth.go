@@ -35,6 +35,7 @@ func (a *authHandler) Inject(target any) error {
 		r.Route("/user", func(sr chi.Router) {
 			sr.Post("/register", a.registerUser)
 			sr.Post("/login", a.loginUser)
+			sr.Post("/update", a.updateUser)
 			sr.Post("/delete", a.deleteUser)
 		})
 
@@ -42,6 +43,7 @@ func (a *authHandler) Inject(target any) error {
 			sr.Post("/generate", a.generateOTP)
 			sr.Post("/verify", a.verifyOTP)
 			sr.Post("/validate", a.validateOTP)
+			sr.Post("/validate-discord", a.validateOTPviaDiscord)
 			sr.Post("/disable", a.disableOTP)
 		})
 	})

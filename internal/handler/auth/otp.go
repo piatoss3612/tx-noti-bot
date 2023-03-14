@@ -126,6 +126,39 @@ func (a *authHandler) validateOTP(w http.ResponseWriter, r *http.Request) {
 	_ = helpers.WriteJSON(w, http.StatusOK, resp)
 }
 
+func (a *authHandler) validateOTPviaDiscord(w http.ResponseWriter, r *http.Request) {
+	payload, err := a.readOtpPayloadAndVerify(w, r)
+	if err != nil {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, err.Error())
+		slog.Error("error while reading and verifying payload", err, "uri", r.RequestURI)
+		return
+	}
+
+	user, err := a.repo.GetUserByID(r.Context(), payload.ID)
+	if err != nil {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid user id or non-existing user")
+		slog.Error("error while retrieving user matched by id", err, "id", payload.ID)
+		return
+	}
+
+	if !user.OtpEnabled || !user.OtpVerified || user.DiscordID != payload.DiscordID {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "please reconfigure MFA")
+		return
+	}
+
+	if !totp.Validate(payload.Token, user.OtpSecret) {
+		_ = helpers.ErrorJSON(w, http.StatusBadRequest, "invalid token or non-existing user")
+		return
+	}
+
+	var resp models.OtpResponse
+
+	resp.StatusCode = http.StatusOK
+	resp.Otp.OtpValid = true
+
+	_ = helpers.WriteJSON(w, http.StatusOK, resp)
+}
+
 func (a *authHandler) disableOTP(w http.ResponseWriter, r *http.Request) {
 	payload, err := a.readOtpPayloadAndVerify(w, r)
 	if err != nil {
