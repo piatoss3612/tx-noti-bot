@@ -2,6 +2,22 @@ SHELL=cmd.exe
 AUTH=auth
 DISCORD=discord
 
+up_build: build down
+	@echo Building Docker images (if necessary) and Starting Docker containers...
+	docker-compose up --build -d
+	@echo Docker containers are now running!
+
+
+up:
+	@echo Starting Docker containers...
+	docker-compose up -d
+	@echo Docker containers are now running!
+
+down:
+	@echo Stopping docker compose...
+	docker-compose down
+	@echo Done!
+
 build: build_auth build_discord
 
 build_auth:
