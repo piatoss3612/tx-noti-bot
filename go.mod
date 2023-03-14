@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/bwmarrin/discordgo v0.27.0
 	github.com/go-chi/chi/v5 v5.0.8
-	github.com/joho/godotenv v1.5.1
+	github.com/pquerna/otp v1.4.0
 	go.mongodb.org/mongo-driver v1.11.2
 	golang.org/x/exp v0.0.0-20230306221820-f0f767cdffd6
 )
@@ -17,7 +17,6 @@ require (
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pquerna/otp v1.4.0 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect

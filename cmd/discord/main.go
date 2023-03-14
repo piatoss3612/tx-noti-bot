@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/joho/godotenv/autoload"
 	"github.com/piatoss3612/tx-notification/internal/app/discord"
 	hdr "github.com/piatoss3612/tx-notification/internal/handler/discord"
 	"github.com/piatoss3612/tx-notification/internal/logger"

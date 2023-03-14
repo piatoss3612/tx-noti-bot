@@ -13,13 +13,11 @@ import (
 	"github.com/piatoss3612/tx-notification/internal/repository/user/mongo"
 	rc "github.com/piatoss3612/tx-notification/internal/routes/auth"
 	"golang.org/x/exp/slog"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
 var (
 	NAME = "authentication"
-	PORT = "3000"
+	PORT = "80"
 )
 
 func main() {
